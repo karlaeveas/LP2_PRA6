@@ -1,0 +1,28 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+#ifndef M_PI
+#define M_PI 3.14159265358979323846 // Definir manualmente el valor de pi
+#endif
+class Circulo {
+private:
+    double radio;
+    double diametro;
+public:
+    Circulo(double radio, double diametro) : radio(radio), diametro(diametro) {}
+    double getRadio() const { return radio; }
+    double getDiametro() const { return diametro; }
+    friend double calcularArea(const Circulo& circulo);
+};
+double calcularArea(const Circulo& circulo) {
+    return M_PI * pow(circulo.getRadio(), 2);
+}
+int main() {
+    Circulo c1(2.5, 5);
+    Circulo c2(3.7, 7.4);
+    double areaC1 = calcularArea(c1);
+    double areaC2 = calcularArea(c2);
+    cout << "El area del circulo 1 es: " << areaC1 << endl;
+    cout << "El area del circulo 2 es: " << areaC2 << endl;
+    return 0;
+}
