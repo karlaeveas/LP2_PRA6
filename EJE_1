@@ -1,0 +1,106 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+using namespace std;
+
+class Alumno {
+private:
+    string nombre;
+    int edad;
+    float promedio;
+
+public:
+    Alumno(string nombre, int edad, float promedio)
+        : nombre(nombre), edad(edad), promedio(promedio) {}
+
+    string toString() const {
+        return "Nombre: " + nombre + ", Edad: " + to_string(edad) + ", Promedio: " + to_string(promedio);
+    }
+
+    bool operator<(const Alumno& otro) const {
+        return promedio < otro.promedio;
+    }
+
+    float getPromedio() const {
+        return promedio;
+    }
+};
+
+class Grupo {
+private:
+    vector<Alumno> alumnos;
+
+public:
+    Grupo(int cantidad) {
+        alumnos.reserve(cantidad); // Reservar espacio para "cantidad" elementos en el vector
+    }
+
+    string toString() const {
+        string result = "Grupo:\n";
+        for (const auto& alumno : alumnos) {
+            result += alumno.toString() + "\n";
+        }
+        return result;
+    }
+
+    void agregar_alumno(string nombre, int edad, float promedio) {
+        if (promedio < 0 || promedio > 20) {
+            throw invalid_argument("El promedio debe estar entre 0 y 20");
+        }
+        alumnos.emplace_back(nombre, edad, promedio);
+    }
+
+    void ordenar_por_promedio() {
+        sort(alumnos.begin(), alumnos.end(), [](const Alumno& a, const Alumno& b) {
+            return a.getPromedio() < b.getPromedio();
+            });
+    }
+
+    float promedio_grupo() const {
+        float totalPromedios = 0.0;
+        for (const auto& alumno : alumnos) {
+            totalPromedios += alumno.getPromedio();
+        }
+        return alumnos.empty() ? 0.0 : totalPromedios / alumnos.size();
+    }
+
+    Alumno mejor_promedio() const {
+        if (alumnos.empty()) {
+            throw logic_error("No hay alumnos en el grupo");
+        }
+
+        Alumno mejorAlumno = alumnos.front();
+        for (const auto& alumno : alumnos) {
+            if (alumno.getPromedio() > mejorAlumno.getPromedio()) {
+                mejorAlumno = alumno;
+            }
+        }
+        return mejorAlumno;
+    }
+};
+
+int main() {
+    try {
+        Grupo grupo(5); //5 objetos Alumno
+
+        grupo.agregar_alumno("Juan", 20, 8.5);
+        grupo.agregar_alumno("Maria", 22, 17.0);
+        grupo.agregar_alumno("Carlos", 21, 9.5);
+        grupo.agregar_alumno("Ana", 19, 12.2);
+        grupo.agregar_alumno("Pedro", 23, 14.7);
+
+        cout << "Grupo:\n" << grupo.toString() << endl;
+        cout << "Promedio de los promedios del grupo: " << grupo.promedio_grupo() << endl;
+        Alumno mejorPromedio = grupo.mejor_promedio();
+        cout << "Alumno con el mejor promedio:\n" << mejorPromedio.toString() << endl;
+    }
+    catch (const invalid_argument& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+    catch (const logic_error& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+    return 0;
+}
