@@ -1,0 +1,45 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+class Prestamo {
+private:
+    double interes;
+    int dias;
+    int capital;
+public:
+    Prestamo(double _interes, int _dias, int _capital) : interes(_interes), dias(_dias), capital(_capital) {}
+    friend double calcular_interes(const Prestamo& prestamo);
+};
+double calcular_interes(const Prestamo& prestamo) {
+    double monto = pow(1 + prestamo.interes / 100, prestamo.dias / 360.0) - 1;
+    double monto_final = monto * prestamo.capital;
+    return monto_final;
+}
+class Banco {
+private:
+    static double tasa_interes;
+public:
+    static void setTasaInteres(double tasa) {
+        tasa_interes = tasa;
+    }
+    static double getTasaInteres() {
+        return tasa_interes;
+    }
+};
+double Banco::tasa_interes = 0.0;
+int main() {
+    double interes;
+    int dias;
+    int capital;
+    cout << "Ingrese la tasa de interes anual del banco: ";
+    cin >> interes;
+    Banco::setTasaInteres(interes);
+    cout << "Ingrese el número de dias del prestamo: ";
+    cin >> dias;
+    cout << "Ingrese el capital prestado: ";
+    cin >> capital;
+    Prestamo prestamo(Banco::getTasaInteres(), dias, capital);
+    double interes_compuesto = calcular_interes(prestamo);
+    cout << "El interes compuesto ganado es: " << interes_compuesto << endl;
+    return 0;
+}
