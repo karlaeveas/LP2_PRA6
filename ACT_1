@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+class Estudiante {
+public:
+    Estudiante(string nombre, int edad, float nota1, float nota2, float nota3)
+        : nombre(nombre), edad(edad), nota1(nota1), nota2(nota2), nota3(nota3) {}
+    float calcularPromedio() const {
+        return (nota1 + nota2 + nota3) / 3.0;
+    }
+    void imprimirDatos() const {
+        cout << "Nombre: " << nombre << ", Edad: " << edad << ", Promedio: " << calcularPromedio() << endl;
+    }
+    static bool compararPorPromedio(const Estudiante& est1, const Estudiante& est2) {
+        return est1.calcularPromedio() > est2.calcularPromedio();
+    }
+    bool promedioMayorQue(float nota) const {
+        return calcularPromedio() > nota;
+    }
+private:
+    string nombre;
+    int edad;
+    float nota1, nota2, nota3;
+};
+int main() {
+    vector<Estudiante> estudiantes;
+    estudiantes.push_back(Estudiante("alumno_1", 20, 16.5, 17.8, 18.0));
+    estudiantes.push_back(Estudiante("alumno_2", 21, 15.0, 14.5, 19.5));
+    estudiantes.push_back(Estudiante("alumno_3", 22, 12.5, 13.5, 11.0));
+    estudiantes.push_back(Estudiante("alumno_4", 19, 18.0, 18.5, 17.5));
+    sort(estudiantes.begin(), estudiantes.end(), Estudiante::compararPorPromedio);
+    cout << "Estudiantes ordenados por promedio:" << endl;
+    for (const Estudiante& estudiante : estudiantes) {
+        estudiante.imprimirDatos();
+    }
+    float notaMinima = 15.0;
+    cout << "\nEstudiantes con promedio mayor a " << notaMinima << ":" << endl;
+    for (const Estudiante& estudiante : estudiantes) {
+        if (estudiante.promedioMayorQue(notaMinima)) {
+            estudiante.imprimirDatos();
+        }
+    }
+    return 0;
+}
